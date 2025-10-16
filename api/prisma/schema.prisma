@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model GitCommand {
+  id        String   @id @default(cuid())
+  username  String
+  token     String
+  owner     String
+  repo      String
+  command   String
+  output    String?
+  status    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([createdAt])
+}
+
+model GeneratedFile {
+  id          String   @id @default(cuid())
+  fileType    String
+  fileName    String
+  content     String   @db.Text
+  repo        String
+  owner       String
+  committed   Boolean  @default(false)
+  commitHash  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([repo, owner])
+}

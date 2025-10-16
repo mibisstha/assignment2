@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  #  PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: assignment2-db
+    environment:
+      POSTGRES_USER: gituser
+      POSTGRES_PASSWORD: gitpass123
+      POSTGRES_DB: gitautomation
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gituser"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  #  API Service (Backend)
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: assignment2-api
+    ports:
+      - "4080:4000"
+    environment:
+      DATABASE_URL: postgresql://gituser:gitpass123@postgres:5432/gitautomation?schema=public
+      PORT: 4000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./api:/app
+      - /app/node_modules
+
+  #  Frontend Service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: assignment2-frontend
+    ports:
+      - "80:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://54.161.102.141:4080
+      NODE_ENV: production
+    depends_on:
+      - api
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+
+volumes:
+  postgres_data:

@@ -1,0 +1,22 @@
+{
+  "name": "assignment2-api",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "next dev -p 4000",
+    "build": "prisma generate && next build",
+    "start": "next start -p 4000"
+  },
+  "dependencies": {
+    "next": "14.2.33",
+    "react": "18.3.0",
+    "react-dom": "18.3.0",
+    "@prisma/client": "^5.20.0",
+    "simple-git": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.3.0",
+    "prisma": "^5.20.0",
+    "typescript": "^5.0.0"
+  }
+}
