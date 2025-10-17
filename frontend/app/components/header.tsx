@@ -24,7 +24,7 @@ export default function Header() {
             <li className="nav-item"><Link href="/" className="nav-link custom-link p-0">Home</Link></li>
             <li className="nav-item"><Link href="/themes" className="nav-link custom-link p-0">Themes</Link></li>
             <li className="nav-item"><Link href="/docker" className="nav-link custom-link p-0">Docker</Link></li>
-            <li className="nav-item"><Link href="/prisma" className="nav-link custom-link p-0">Prisma/Sequelize</Link></li>
+            <li className="nav-item"><Link href="/prisma-seqeulize" className="nav-link custom-link p-0">Prisma/Sequelize</Link></li>
             <li className="nav-item"><Link href="/tests" className="nav-link custom-link p-0">Tests</Link></li>
             <li className="nav-item"><Link href="/about" className="nav-link custom-link p-0">About</Link></li>
           </ul>

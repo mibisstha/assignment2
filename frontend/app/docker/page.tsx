@@ -25,7 +25,7 @@ export default function DockerPage() {
     setResult(null);
 
     try {
-      const response = await fetch('http://localhost:4000/api/generate', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

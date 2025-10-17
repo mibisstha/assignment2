@@ -84,8 +84,7 @@ export default function PrismaSequelizePage() {
     setResult(null);
 
     try {
-      const response = await fetch('http://localhost:4000/api/generate', {
-        method: 'POST',
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/generate`, {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           type: orm,
