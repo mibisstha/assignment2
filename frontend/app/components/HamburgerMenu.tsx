@@ -23,7 +23,7 @@ export default function HamburgerMenu() {
           <li><Link href="/">Home</Link></li>
           <li><Link href="/themes">Themes</Link></li>
           <li><Link href="/docker">Docker</Link></li>
-          <li><Link href="/prisma">Prisma/Sequelize</Link></li>
+          <li><Link href="/prisma-seqeulize">Prisma/Sequelize</Link></li>
           <li><Link href="/tests">Tests</Link></li>
           <li><Link href="/about">About</Link></li>
         </ul>
