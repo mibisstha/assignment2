@@ -1,6 +1,5 @@
 'use client';
-/* eslint-disable no-undef */
-/* eslint-disable no-restricted-globals */
+
 import { useEffect, useState } from 'react';
 
 interface GitCommand {
@@ -17,113 +16,58 @@ interface GitCommand {
 export default function HistoryPage() {
   const [commands, setCommands] = useState<GitCommand[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  const API_BASE =
-    process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
   useEffect(() => {
     fetchCommands();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchCommands = async () => {
     try {
-      const response = await fetch(`${API_BASE}/api/gitcommands`);
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4080';
+      const response = await fetch(`${apiUrl}/api/gitcommands`);
       const data = await response.json();
       setCommands(data);
-    } catch (err: unknown) {
-      if (err instanceof Error) setError(err.message);
-      else setError('Unknown error');
+    } catch (error) {
+      console.error('Failed to fetch:', error);
     } finally {
       setLoading(false);
     }
   };
 
   const deleteCommand = async (id: string) => {
-    if (typeof window !== 'undefined' && !window.confirm('Are you sure you want to delete this command?')) return;
+    if (!confirm('Delete this command?')) return;
 
     try {
-      await fetch(`${API_BASE}/api/gitcommands/${id}`, {
-        method: 'DELETE',
-      });
-      setCommands((prev) => prev.filter((cmd) => cmd.id !== id));
-    } catch (err: unknown) {
-      if (err instanceof Error) alert('Failed to delete: ' + err.message);
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4080';
+      await fetch(`${apiUrl}/api/gitcommands/${id}`, { method: 'DELETE' });
+      setCommands(commands.filter(cmd => cmd.id !== id));
+    } catch (error) {
+      alert('Failed to delete');
     }
   };
 
-  if (loading) return <div className="p-8">Loading...</div>;
-  if (error) return <div className="p-8 text-red-600">Error: {error}</div>;
+  if (loading) return <div>Loading...</div>;
 
   return (
-    <div className="container mx-auto p-8">
-      <h1 className="text-3xl font-bold mb-6">Git Command History</h1>
-      <div className="space-y-4">
-        {commands.length === 0 ? (
-          <p className="text-gray-500">No commands executed yet.</p>
-        ) : (
-          commands.map((cmd) => (
-            <div key={cmd.id} className="border rounded-lg p-4 bg-white shadow">
-              <div className="flex justify-between items-start">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <span
-                      className={`px-3 py-1 rounded text-sm font-semibold ${
-                        cmd.status === 'success'
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-red-100 text-red-800'
-                      }`}
-                    >
-                      {cmd.status}
-                    </span>
-                    <span className="text-gray-600">
-                      {new Date(cmd.createdAt).toLocaleString()}
-                    </span>
-                  </div>
-
-                  <div className="mb-2">
-                    <span className="font-semibold">Repository:</span>{' '}
-                    <a
-                      href={`https://github.com/${cmd.owner}/${cmd.repo}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline"
-                    >
-                      {cmd.owner}/{cmd.repo}
-                    </a>
-                  </div>
-
-                  <div className="mb-2">
-                    <span className="font-semibold">Command:</span>{' '}
-                    <code className="bg-gray-100 px-2 py-1 rounded">
-                      {cmd.command}
-                    </code>
-                  </div>
-
-                  {cmd.output && (
-                    <details className="mt-2">
-                      <summary className="cursor-pointer text-blue-600">
-                        View Output
-                      </summary>
-                      <pre className="mt-2 p-3 bg-gray-50 rounded text-sm overflow-auto">
-                        {cmd.output}
-                      </pre>
-                    </details>
-                  )}
-                </div>
-
-                <button
-                  onClick={() => deleteCommand(cmd.id)}
-                  className="ml-4 bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
-                >
-                  Delete
-                </button>
+    <div className="container">
+      <h1 className="mb-4">Command History</h1>
+      
+      {commands.length === 0 ? (
+        <p>No commands yet.</p>
+      ) : (
+        <div>
+          {commands.map(cmd => (
+            <div key={cmd.id} className="card mb-3">
+              <div className="card-body">
+                <h5>{cmd.owner}/{cmd.repo}</h5>
+                <p><strong>Command:</strong> {cmd.command}</p>
+                <p><strong>Status:</strong> <span className={`badge bg-${cmd.status === 'success' ? 'success' : 'danger'}`}>{cmd.status}</span></p>
+                <button onClick={() => deleteCommand(cmd.id)} className="btn btn-sm btn-danger">Delete</button>
               </div>
             </div>
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

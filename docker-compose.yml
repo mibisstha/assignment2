@@ -1,7 +1,4 @@
-version: '3.8'
-
 services:
-  #  PostgreSQL Database
   postgres:
     image: postgres:16-alpine
     container_name: assignment2-db
@@ -19,7 +16,6 @@ services:
       timeout: 5s
       retries: 5
 
-  #  API Service (Backend)
   api:
     build:
       context: ./api
@@ -29,15 +25,12 @@ services:
       - "4080:4000"
     environment:
       DATABASE_URL: postgresql://gituser:gitpass123@postgres:5432/gitautomation?schema=public
+      NODE_ENV: production
       PORT: 4000
     depends_on:
       postgres:
         condition: service_healthy
-    volumes:
-      - ./api:/app
-      - /app/node_modules
 
-  #  Frontend Service
   frontend:
     build:
       context: ./frontend
@@ -46,14 +39,10 @@ services:
     ports:
       - "80:3000"
     environment:
-      NEXT_PUBLIC_API_URL: http://54.161.102.141:4080
+      NEXT_PUBLIC_API_URL: http://34.229.112.114 :4080
       NODE_ENV: production
     depends_on:
       - api
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-      - /app/.next
 
 volumes:
   postgres_data:

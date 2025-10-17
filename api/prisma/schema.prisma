@@ -26,7 +26,7 @@ model GeneratedFile {
   id          String   @id @default(cuid())
   fileType    String
   fileName    String
-  content     String   @db.Text
+  content     String
   repo        String
   owner       String
   committed   Boolean  @default(false)
