@@ -26,6 +26,7 @@ app.prepare().then(() => {
     return res.sendStatus(200);
   });
 
+  // Remove this line 
   // server.use(express.json());
 
   // Let Next.js handle everything else
