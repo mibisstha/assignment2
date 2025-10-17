@@ -3,15 +3,15 @@ services:
     image: postgres:16-alpine
     container_name: assignment2-db
     environment:
-      POSTGRES_USER: gituser
-      POSTGRES_PASSWORD: gitpass123
-      POSTGRES_DB: gitautomation
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydb
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U gituser"]
+      test: ["CMD-SHELL", "pg_isready -U user -d mydb"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -24,7 +24,7 @@ services:
     ports:
       - "4080:4000"
     environment:
-      DATABASE_URL: postgresql://gituser:gitpass123@postgres:5432/gitautomation?schema=public
+      DATABASE_URL: postgresql://user:password@postgres:5432/mydb
       NODE_ENV: production
       PORT: 4000
     depends_on:
@@ -39,7 +39,7 @@ services:
     ports:
       - "80:3000"
     environment:
-      NEXT_PUBLIC_API_URL: http://34.229.112.114 :4080
+      NEXT_PUBLIC_API_URL: http://3.81.151.8:4080
       NODE_ENV: production
     depends_on:
       - api

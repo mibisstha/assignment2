@@ -1,14 +1,27 @@
-FROM node:18-alpine
+FROM node:22-alpine
 
 WORKDIR /app
 
-RUN apk add --no-cache git openssl
+# Install required system packages
+RUN apk add --no-cache openssl libc6-compat git
 
-COPY package.json ./
+# Copy dependency files first for better caching
+COPY package*.json ./
+
+# Install all dependencies (including dev, since build needs them)
 RUN npm install
 
+# Copy the entire app
 COPY . .
 
+# Generate Prisma client
+RUN npx prisma generate
+
+# Build the Next.js app
+RUN npm run build
+
+# Expose the API port
 EXPOSE 4000
 
-CMD npx prisma generate && npx prisma db push --accept-data-loss && npm run dev
+# Run Prisma DB push before starting the API
+CMD sh -c "npx prisma db push --accept-data-loss && node server.js"
